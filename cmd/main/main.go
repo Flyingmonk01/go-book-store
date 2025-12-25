@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/Flyingmonk01/go-book-store/pkg/config"
 	"github.com/Flyingmonk01/go-book-store/pkg/controller"
@@ -15,6 +17,8 @@ import (
 func main() {
 	fmt.Println("Hello world")
 	// 1. Connect to database
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+
 	d := config.ConnectToDB()
 
 	// 2. Create service with DB

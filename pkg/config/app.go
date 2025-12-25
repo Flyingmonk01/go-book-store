@@ -16,6 +16,23 @@ func ConnectToDB() *pgx.Conn {
 
 	DB = d
 	fmt.Println("Connected to database successfully")
-
+	AutoMigrate(DB)
 	return DB
+}
+
+func AutoMigrate(db *pgx.Conn) {
+	createTableSQL := `
+		CREATE TABLE IF NOT EXISTS book (
+			id VARCHAR(50) PRIMARY KEY,
+			name VARCHAR(100) NOT NULL,
+			author VARCHAR(100) NOT NULL,
+			published_year INT NOT NULL,
+			crated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)
+	`
+
+	_, err := db.Exec(context.Background(), createTableSQL)
+	utils.CheckNilError(err)
+	fmt.Println("Database migrated successfully")
 }
