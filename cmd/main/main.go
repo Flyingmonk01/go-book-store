@@ -5,16 +5,27 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Flyingmonk01/go-book-store/pkg/config"
+	"github.com/Flyingmonk01/go-book-store/pkg/controller"
 	"github.com/Flyingmonk01/go-book-store/pkg/routes"
+	"github.com/Flyingmonk01/go-book-store/pkg/service"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	fmt.Println("Hello world")
+	// 1. Connect to database
+	d := config.ConnectToDB()
+
+	// 2. Create service with DB
+	bookService := service.NewBookService(d)
+
+	// 3. Create controller with service
+	bookController := controller.NewBookController(bookService)
 
 	r := mux.NewRouter()
+	routes.RegisterBookStoreRoutes(r, bookController)
 
-	routes.RegisterBookStoreRoutes(r)
 	http.Handle("/", r)
 	fmt.Println("Server started on port 8000")
 	log.Fatal(http.ListenAndServe(":8000", r))
